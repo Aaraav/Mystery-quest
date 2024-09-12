@@ -1,0 +1,15 @@
+
+services:
+  postgres:
+    container_name: mystery_maze
+    image: postgres:16
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres      # Set your PostgreSQL username
+      POSTGRES_PASSWORD: ucc # Set your PostgreSQL password
+      POSTGRES_DB: mystery_maze_db      # Name of the default database
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # Persistent volume for data
+    networks:
+      - app-network

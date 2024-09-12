@@ -1,0 +1,46 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url  	    = env("DATABASE_URL")
+  // uncomment next line if you use Prisma <5.10
+  // directUrl = env("DATABASE_URL_UNPOOLED")
+}
+
+model Team {
+  id               Int       @id @default(autoincrement()) 
+  teamname         String    @unique
+  teamlead         String    @unique
+  email            String    @unique
+  mobile           BigInt    @unique
+  teamscore        String    @default("0")
+  finishtime       DateTime?
+  progress         UserProgress[] 
+}
+
+model Riddle {
+  rid             String    @id @default(cuid()) 
+  description     String  
+  riddlecode      String  
+  location        String  
+  progress        UserProgress[]
+}
+
+model UserProgress {
+  id            Int       @id @default(autoincrement())  
+  teamId        Int                                      
+  riddleId      String                                   
+  attempts      Int       @default(0)
+  score         Int       @default(0)
+  lastSolvedAt  DateTime?                                
+
+  team          Team      @relation(fields: [teamId], references: [id])
+  riddle        Riddle    @relation(fields: [riddleId], references: [rid])
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@unique([teamId, riddleId]) 
+}

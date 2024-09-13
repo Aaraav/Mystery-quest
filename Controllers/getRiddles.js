@@ -3,13 +3,16 @@ const prisma = require('../DB/db.config');
 const getRiddles = async (req, res) => {
     try {
         const user = req.user;  
-        
-        const team = await prisma.team.findFirst({
+        console.log('user', user);
+
+        const team = await prisma.team.findUnique({
             where: { teamname: user.teamname }
         });
 
+        console.log('team', team);
+
         if (!team) {
-            return res.status(404).json({ error: 'User not found' });
+            return res.status(404).json({ error: 'Team not found' });
         }
 
         const existingProgress = await prisma.userProgress.count({
@@ -24,6 +27,7 @@ const getRiddles = async (req, res) => {
 
         const randomRiddles = await prisma.$queryRaw`SELECT * FROM "Riddle" ORDER BY RANDOM() LIMIT ${riddlesNeeded}`;
 
+        // Assign the selected random riddles to the team
         for (const riddle of randomRiddles) {
             await prisma.userProgress.upsert({
                 where: {

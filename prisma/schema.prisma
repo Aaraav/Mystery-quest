@@ -4,9 +4,7 @@ generator client {
 
 datasource db {
   provider  = "postgresql"
-  url  	    = env("DATABASE_URL")
-  // uncomment next line if you use Prisma <5.10
-  // directUrl = env("DATABASE_URL_UNPOOLED")
+  url       = env("DATABASE_URL")
 }
 
 model Team {
@@ -15,9 +13,11 @@ model Team {
   teamlead         String    @unique
   email            String    @unique
   mobile           BigInt    @unique
-  teamscore        String    @default("0")
-  finishtime       DateTime?
+  teamscore        Int    @default(0)
   progress         UserProgress[] 
+  winners          Winner[]  
+  lastSolvedAt      DateTime?  // Add this field if it doesn't exist
+
 }
 
 model Riddle {
@@ -43,4 +43,15 @@ model UserProgress {
   updatedAt     DateTime  @updatedAt
 
   @@unique([teamId, riddleId]) 
+}
+
+model Winner {
+  id         Int      @id @default(autoincrement())
+  teamId     Int      
+  team       Team     @relation(fields: [teamId], references: [id])
+  rank       Int     
+  score      Int      
+  solvedAt   DateTime 
+
+  createdAt  DateTime @default(now())
 }

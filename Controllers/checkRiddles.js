@@ -2,18 +2,37 @@ const prisma = require('../DB/db.config');
 
 const checkAnswer = async (req, res) => {
     try {
-        const { userId, riddleId, userAnswer } = req.body;
+        // const user = req.user;
+
+        // const team = await prisma.team.findFirst({
+        //     where: { email: user.email }
+        // });
+
+        // if (!team) {
+        //     return res.status(404).json({ error: "Team not found for the user." });
+        // }
+        // console.log('team',team);
+
+        const {teamId, riddleId, userAnswer } = req.body;
 
         const progress = await prisma.userProgress.findFirst({
-            where: { teamId: userId, riddleId: riddleId }
+            where: { teamId: parseInt(teamId), riddleId: riddleId }
         });
 
         if (!progress) {
             return res.status(404).json({ error: "Riddle not found for this user." });
         }
 
+        if (progress.score > 0) {
+            return res.status(400).json({ message: "This riddle has already been solved by your team. No further attempts allowed." });
+        }
+
+        if (progress.attempts >= 4) {
+            return res.status(400).json({ message: "No more attempts are allowed for this riddle. You have reached the maximum attempts." });
+        }
+
         const riddle = await prisma.riddle.findUnique({
-            where: { id: riddleId }
+            where: { rid: riddleId }
         });
 
         if (!riddle) {
@@ -25,23 +44,42 @@ const checkAnswer = async (req, res) => {
             if (progress.attempts === 0) score = 10;
             else if (progress.attempts === 1) score = 8;
             else if (progress.attempts === 2) score = 6;
+            else score = 0;
 
-            await prisma.userProgress.update({
-                where: { id: progress.id },
-                data: {
-                    score: score,
-                    lastSolvedAt: new Date(),
-                    attempts: progress.attempts + 1
-                }
+            await prisma.$transaction(async (prisma) => {
+                await prisma.userProgress.update({
+                    where: { id: progress.id },
+                    data: {
+                        score: score,
+                        lastSolvedAt: new Date(),
+                        attempts: progress.attempts + 1
+                    }
+                });
+
+                await prisma.team.update({
+                    where: {
+                      id: parseInt(teamId)
+                    },
+                    data: {
+                      teamscore: {
+                        increment: score
+                      },
+                      lastSolvedAt: new Date()
+                    }
+                  });
             });
-
 
             return res.status(200).json({ message: "Correct answer!", score: score });
         } else {
+            // If the answer is incorrect, increment the attempt count
             await prisma.userProgress.update({
                 where: { id: progress.id },
                 data: { attempts: progress.attempts + 1 }
             });
+
+            if (progress.attempts + 1 >= 4) {
+                return res.status(400).json({ message: "Incorrect answer. You have used all your attempts for this riddle." });
+            }
 
             return res.status(400).json({ message: "Incorrect answer. Try again." });
         }
@@ -50,5 +88,4 @@ const checkAnswer = async (req, res) => {
     }
 };
 
-
-module.exports=checkAnswer;
+module.exports = checkAnswer;

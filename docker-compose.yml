@@ -1,15 +1,20 @@
-
+version: '3'
 services:
-  postgres:
-    container_name: mystery_maze
-    image: postgres:16
-    ports:
-      - "5432:5432"
-    environment:
-      POSTGRES_USER: postgres      # Set your PostgreSQL username
-      POSTGRES_PASSWORD: ucc # Set your PostgreSQL password
-      POSTGRES_DB: mystery_maze_db      # Name of the default database
+  db:
+    image: postgres
+    restart: always
     volumes:
-      - postgres_data:/var/lib/postgresql/data # Persistent volume for data
-    networks:
-      - app-network
+      - ./data/db:/var/lib/postgresql/data
+    ports:
+      - 5432:5432  # make sure you don't have another container running on 5432
+
+    environment:
+      - POSTGRES_DB=mysterymaze
+      - POSTGRES_USER=chaiaurcode
+      - POSTGRES_PASSWORD=chaiaurcode
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080

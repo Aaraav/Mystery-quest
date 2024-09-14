@@ -1,4 +1,3 @@
-version: '3'
 services:
   db:
     image: postgres
@@ -6,8 +5,7 @@ services:
     volumes:
       - ./data/db:/var/lib/postgresql/data
     ports:
-      - 5432:5432  # make sure you don't have another container running on 5432
-
+      - 5432:5432  
     environment:
       - POSTGRES_DB=mysterymaze
       - POSTGRES_USER=chaiaurcode
@@ -18,3 +16,19 @@ services:
     restart: always
     ports:
       - 8080:8080
+
+  # backend:
+  #   image: backend24
+  #   container_name: backend
+  #   environment:
+  #     DATABASE_URL: postgresql://chaiaurcode:chaiaurcode@db:5432/mysterymaze
+  #   depends_on:
+  #     - db
+  #   ports:
+  #     - "4000:4000"
+
+  # redis:
+  #   image: redis
+  #   restart: always
+  #   ports:
+  #     - 6379:6379

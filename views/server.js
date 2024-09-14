@@ -8,10 +8,13 @@ const getTopTeams=require('../Controllers/winners');
 const authenticateToken=require('../Controllers/Authenticate');
 
 router.post('/create',createTeam);
+
 router.post('/login',login);
 router.get('/getriddles',authenticateToken,randomRiddles);
 router.post('/riddlesol',authenticateToken,checkAnswer);
 router.get('/gettopteams',getTopTeams);
+
+
 
 
 module.exports =  router ; 

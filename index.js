@@ -18,6 +18,9 @@ app.use('/api',router);
 
 
 
+app.get('/',(req,res)=>{
+res.send('hello ucc');
+})
 
 
 app.listen(port, () => {

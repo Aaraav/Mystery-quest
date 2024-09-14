@@ -1,4 +1,9 @@
 const prisma = require('../DB/db.config');
+const {createClient}=require('redis');
+// const client=createClient();
+
+// client.on('error', (err) => console.log('Redis Client Error', err));
+
 
 const getRiddles = async (req, res) => {
     try {
@@ -15,6 +20,7 @@ const getRiddles = async (req, res) => {
             return res.status(404).json({ error: 'Team not found' });
         }
 
+
         const existingProgress = await prisma.userProgress.count({
             where: { teamId: team.id }
         });
@@ -22,6 +28,12 @@ const getRiddles = async (req, res) => {
         if (existingProgress >= 6) {
             return res.status(400).json({ error: 'Team already has 6 riddles assigned' });
         }
+
+        // const cachedRiddles = await client.get(`team:${team.id}:riddles`);
+
+        // if (cachedRiddles) {
+        //     return res.json(JSON.parse(cachedRiddles));
+        // }
 
         const riddlesNeeded = 6 - existingProgress;
 
@@ -50,6 +62,9 @@ const getRiddles = async (req, res) => {
                 }
             });
         }
+
+        // await client.set(`team:${team.id}:riddles`, JSON.stringify(randomRiddles), 'EX', 3600);
+
 
         return res.json(randomRiddles);
     } catch (error) {

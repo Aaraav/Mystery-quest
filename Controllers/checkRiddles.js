@@ -2,21 +2,21 @@ const prisma = require('../DB/db.config');
 
 const checkAnswer = async (req, res) => {
     try {
-        // const user = req.user;
+        const user = req.user;
 
-        // const team = await prisma.team.findFirst({
-        //     where: { email: user.email }
-        // });
+        const team = await prisma.team.findFirst({
+            where: { email: user.email }
+        });
 
-        // if (!team) {
-        //     return res.status(404).json({ error: "Team not found for the user." });
-        // }
-        // console.log('team',team);
+        if (!team) {
+            return res.status(404).json({ error: "Team not found for the user." });
+        }
+        console.log('team',team);
 
-        const {teamId, riddleId, userAnswer } = req.body;
+        const { riddleId, userAnswer } = req.body;
 
         const progress = await prisma.userProgress.findFirst({
-            where: { teamId: parseInt(teamId), riddleId: riddleId }
+            where: { teamId: parseInt(team.id), riddleId: riddleId }
         });
 
         if (!progress) {
@@ -58,7 +58,7 @@ const checkAnswer = async (req, res) => {
 
                 await prisma.team.update({
                     where: {
-                      id: parseInt(teamId)
+                      id: parseInt(team.id)
                     },
                     data: {
                       teamscore: {
@@ -71,7 +71,6 @@ const checkAnswer = async (req, res) => {
 
             return res.status(200).json({ message: "Correct answer!", score: score });
         } else {
-            // If the answer is incorrect, increment the attempt count
             await prisma.userProgress.update({
                 where: { id: progress.id },
                 data: { attempts: progress.attempts + 1 }

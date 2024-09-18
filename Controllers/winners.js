@@ -2,7 +2,6 @@ const prisma = require('../DB/db.config');
 
 const getTopTeams = async (req, res) => {
     try {
-        // Fetch top 3 teams based on score and last solved time
         const topTeams = await prisma.team.findMany({
             orderBy: [
                 { teamscore: 'desc' },
@@ -24,15 +23,14 @@ const getTopTeams = async (req, res) => {
             lastSolvedAt: team.lastSolvedAt,
         }));
 
-        // Use a transaction to update the winners
         await prisma.$transaction(async (prisma) => {
             for (const rankedTeam of rankedTeams) {
                 await prisma.winner.create({
                     data: {
-                        teamId: rankedTeam.id,  // Use the existing teamId
+                        teamId: rankedTeam.id,  
                         rank: rankedTeam.rank,
                         score: rankedTeam.teamscore,
-                        solvedAt: rankedTeam.lastSolvedAt || new Date()  // Ensure solvedAt is a valid Date
+                        solvedAt: rankedTeam.lastSolvedAt || new Date()  
                     }
                 });
             }

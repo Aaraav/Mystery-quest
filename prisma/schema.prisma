@@ -12,7 +12,7 @@ model Team {
   teamname         String    @unique
   teamlead         String    @unique
   email            String    @unique
-  mobile           BigInt    @unique
+  mobile           String    @unique
   teamscore        Int    @default(0)
   progress         UserProgress[] 
   winners          Winner[]  

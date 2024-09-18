@@ -14,7 +14,7 @@ const createTeam = async (req,res) => {
                 OR: [
                     { teamname },
                     { email },
-                    { mobile: BigInt(mobile) }
+                    { mobile: String(mobile) }
                 ]
             }
         });
@@ -29,7 +29,7 @@ const createTeam = async (req,res) => {
                 teamname,
                 teamlead,
                 email,
-                mobile: BigInt(mobile),
+                mobile: String(mobile),
             }
         });
 
@@ -58,6 +58,7 @@ const login = async (req, res) => {
         return res.status(200).json({
             message: 'You are successfully logged in',
             token,
+            team
         });
     } catch (error) {
         console.error('Login error:', error.message);

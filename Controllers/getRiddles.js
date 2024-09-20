@@ -25,8 +25,15 @@ const getRiddles = async (req, res) => {
             where: { teamId: team.id }
         });
 
+        const assignedriddles = await prisma.userProgress.findMany({
+            where: { teamId: team.id },
+            include: { riddle: true } // Assuming you have a relation with riddles
+        });
+
         if (existingProgress >= 6) {
-            return res.status(400).json({ error: 'Team already has 6 riddles assigned' });
+
+            
+            return res.status(200).json({ message: 'Team already has 6 riddles assigned' , riddles:assignedriddles});
         }
 
         // const cachedRiddles = await client.get(`team:${team.id}:riddles`);

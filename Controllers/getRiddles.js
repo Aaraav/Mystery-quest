@@ -30,10 +30,10 @@ const getRiddles = async (req, res) => {
             include: { riddle: true } 
         });
 
-        if (existingProgress >= 6) {
+        if (existingProgress >= 8) {
 
             
-            return res.status(200).json({ message: 'Team already has 6 riddles assigned' , riddles:assignedriddles});
+            return res.status(200).json({ message: 'Team already has 8 riddles assigned' , riddles:assignedriddles});
         }
 
         // const cachedRiddles = await client.get(`team:${team.id}:riddles`);
@@ -42,7 +42,7 @@ const getRiddles = async (req, res) => {
         //     return res.json(JSON.parse(cachedRiddles));
         // }
 
-        const riddlesNeeded = 6 - existingProgress;
+        const riddlesNeeded = 8 - existingProgress;
 
         const randomRiddles = await prisma.$queryRaw`SELECT * FROM "Riddle" ORDER BY RANDOM() LIMIT ${riddlesNeeded}`;
 

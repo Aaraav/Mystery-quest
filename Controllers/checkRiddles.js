@@ -2,23 +2,23 @@ const prisma = require('../DB/db.config');
 
 const checkAnswer = async (req, res) => {
     try {
-        const user = req.user;
+        // const user = req.user;
 
-        const team = await prisma.team.findFirst({
-            where: { email: user.email }
-        });
+        // const team = await prisma.team.findFirst({
+        //     where: { email: user.email }
+        // });
 
-        if (!team) {
-            return res.status(404).json({ error: "Team not found for the user." });
-        }
-        console.log('team',team);
+        // if (!team) {
+        //     return res.status(404).json({ error: "Team not found for the user." });
+        // }
+        // console.log('team',team);
 
         
 
-        const {  riddleId, userAnswer } = req.body;
+        const { teamId, riddleId, userAnswer } = req.body;
 
         const progress = await prisma.userProgress.findFirst({
-            where: { teamId: parseInt(team.id), riddleId: riddleId }
+            where: { teamId: parseInt(teamId), riddleId: riddleId }
         });
 
         if (!progress) {
@@ -29,7 +29,7 @@ const checkAnswer = async (req, res) => {
             return res.status(400).json({ message: "This riddle has already been solved by your team. No further attempts allowed." });
         }
 
-        if (progress.attempts >= 3) {
+        if (progress.attempts >= 5) {
             return res.status(400).json({ message: "No more attempts are allowed for this riddle. You have reached the maximum attempts." });
         }
 
@@ -46,6 +46,8 @@ const checkAnswer = async (req, res) => {
             if (progress.attempts === 0) score = 10;
             else if (progress.attempts === 1) score = 8;
             else if (progress.attempts === 2) score = 6;
+            else if (progress.attempts === 3) score = 2;
+            else if (progress.attempts === 4) score = 1;
             else score = 0;
 
             await prisma.$transaction(async (prisma) => {
@@ -60,7 +62,7 @@ const checkAnswer = async (req, res) => {
 
                 await prisma.team.update({
                     where: {
-                      id: parseInt(team.id)
+                      id: parseInt(teamId)
                     },
                     data: {
                       teamscore: {

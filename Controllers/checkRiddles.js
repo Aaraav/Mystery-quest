@@ -29,7 +29,7 @@ const checkAnswer = async (req, res) => {
             return res.status(400).json({ message: "This riddle has already been solved by your team. No further attempts allowed." });
         }
 
-        if (progress.attempts >= 4) {
+        if (progress.attempts >= 3) {
             return res.status(400).json({ message: "No more attempts are allowed for this riddle. You have reached the maximum attempts." });
         }
 

@@ -33,7 +33,7 @@ const getRiddles = async (req, res) => {
         if (existingProgress >= 8) {
 
             
-            return res.status(200).json({ message: 'Team already has 8 riddles assigned' , riddles:assignedriddles});
+            return res.status(200).json(assignedriddles);
         }
 
         // const cachedRiddles = await client.get(`team:${team.id}:riddles`);

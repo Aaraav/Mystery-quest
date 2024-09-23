@@ -11,9 +11,7 @@ router.post('/create',createTeam);
 
 router.post('/login',login);
 router.get('/getriddles',authenticateToken,randomRiddles);
-router.post('/riddlesol',
-    authenticateToken
-    ,checkAnswer);
+router.post('/riddlesol',checkAnswer);
 router.get('/gettopteams',getTopTeams);
 
 

@@ -11,12 +11,13 @@ model Team {
   id               Int       @id @default(autoincrement()) 
   teamname         String    @unique
   teamlead         String    @unique
+  teamlead_roll    String    @unique
   email            String    @unique
   mobile           String    @unique
-  teamscore        Int    @default(0)
+  teamscore        Int       @default(0)
   progress         UserProgress[] 
   winners          Winner[]  
-  lastSolvedAt      DateTime?  // Add this field if it doesn't exist
+  lastSolvedAt      DateTime?  
 
 }
 

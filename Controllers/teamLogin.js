@@ -6,7 +6,7 @@ const JWT_SECRET = 'your_jwt_secret';
 
 const createTeam = async (req,res) => {
     try {
-        const { teamname, teamlead, email, mobile } = req.body;
+        const { teamname, teamlead_roll,teamlead, email, mobile } = req.body;
 
 
         const existingTeam = await prisma.team.findFirst({
@@ -14,6 +14,7 @@ const createTeam = async (req,res) => {
                 OR: [
                     { teamname },
                     { email },
+                    {teamlead_roll},
                     { mobile: String(mobile) }
                 ]
             }
@@ -28,12 +29,16 @@ const createTeam = async (req,res) => {
             data: {
                 teamname,
                 teamlead,
+                teamlead_roll,
                 email,
                 mobile: String(mobile),
             }
         });
 
-        return team;
+        return res.status(200).json({
+            message:'team craeted',
+            team
+        });
     } catch (error) {
         throw new Error('Error creating team: ' + error.message);
     }
@@ -42,11 +47,17 @@ const createTeam = async (req,res) => {
 // Login Function
 const login = async (req, res) => {
     try {
-        const { teamname, mobile } = req.body;
+        const { teamlead_roll, mobile } = req.body;
 
+        if (!teamlead_roll) {
+            return res.status(400).json({ error: "teamlead_roll is required." });
+        }
+        
         const team = await prisma.team.findUnique({
-            where: { teamname }
-        });
+            where: {
+                teamlead_roll: teamlead_roll, // Use the valid value
+            },
+                });
 
         if (!team || mobile !== team.mobile.toString()) {
             return res.status(400).json({ error: 'Invalid credentials' });

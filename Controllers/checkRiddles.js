@@ -13,7 +13,9 @@ const checkAnswer = async (req, res) => {
         }
         console.log('team',team);
 
-        const { riddleId, userAnswer } = req.body;
+        
+
+        const {  riddleId, userAnswer } = req.body;
 
         const progress = await prisma.userProgress.findFirst({
             where: { teamId: parseInt(team.id), riddleId: riddleId }

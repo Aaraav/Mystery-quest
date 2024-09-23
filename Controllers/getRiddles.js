@@ -27,7 +27,7 @@ const getRiddles = async (req, res) => {
 
         const assignedriddles = await prisma.userProgress.findMany({
             where: { teamId: team.id },
-            include: { riddle: true } // Assuming you have a relation with riddles
+            include: { riddle: true } 
         });
 
         if (existingProgress >= 6) {

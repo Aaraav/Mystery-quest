@@ -1,54 +1,50 @@
 const prisma = require('../DB/db.config');
-const {createClient}=require('redis');
-// const client=createClient();
-
-// client.on('error', (err) => console.log('Redis Client Error', err));
-
+// const { createClient } = require('redis');
+// const client = createClient();
 
 const getRiddles = async (req, res) => {
     try {
-        const user = req.user;  
-        console.log('user', user);
+        const user = req.user;
 
+        // Retrieve the team associated with the user
         const team = await prisma.team.findUnique({
-            where: { teamname: user.teamname }
+            where: { teamname: user.teamname },
+            select: { id: true } // Select only the id to reduce data size
         });
-
-        console.log('team', team);
 
         if (!team) {
             return res.status(404).json({ error: 'Team not found' });
         }
 
-
+        // Count existing progress for the team
         const existingProgress = await prisma.userProgress.count({
-            where: { teamId: team.id }
-        });
-
-        const assignedriddles = await prisma.userProgress.findMany({
             where: { teamId: team.id },
-            include: { riddle: true } 
         });
 
+        // If the team has enough riddles assigned, return them
         if (existingProgress >= 8) {
-
-            
-            return res.status(200).json(assignedriddles);
+            const assignedRiddles = await prisma.userProgress.findMany({
+                where: { teamId: team.id },
+                include: { riddle: true }
+            });
+            return res.json(assignedRiddles);
         }
 
-        // const cachedRiddles = await client.get(`team:${team.id}:riddles`);
-
-        // if (cachedRiddles) {
-        //     return res.json(JSON.parse(cachedRiddles));
-        // }
-
+        // Calculate how many more riddles are needed
         const riddlesNeeded = 8 - existingProgress;
 
+        // Ensure there are enough riddles in the database
+        const totalRiddles = await prisma.riddle.count();
+        if (totalRiddles < riddlesNeeded) {
+            return res.status(400).json({ error: 'Not enough riddles available' });
+        }
+
+        // Fetch random riddles
         const randomRiddles = await prisma.$queryRaw`SELECT * FROM "Riddle" ORDER BY RANDOM() LIMIT ${riddlesNeeded}`;
 
-        // Assign the selected random riddles to the team
-        for (const riddle of randomRiddles) {
-            await prisma.userProgress.upsert({
+        // Prepare upsert operations for the selected riddles
+        const upsertPromises = randomRiddles.map(riddle => {
+            return prisma.userProgress.upsert({
                 where: {
                     teamId_riddleId: {
                         teamId: team.id,
@@ -68,10 +64,13 @@ const getRiddles = async (req, res) => {
                     lastSolvedAt: null
                 }
             });
-        }
+        });
 
+        // Execute all upserts in a single transaction
+        await prisma.$transaction(upsertPromises);
+
+        // Optionally cache the riddles
         // await client.set(`team:${team.id}:riddles`, JSON.stringify(randomRiddles), 'EX', 3600);
-
 
         return res.json(randomRiddles);
     } catch (error) {

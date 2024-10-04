@@ -1,243 +1,257 @@
-const {PrismaClient }=require('@prisma/client');
+const { PrismaClient } = require('@prisma/client');
 
-const prisma=new PrismaClient({
-log :["warn","error"]
+const prisma = new PrismaClient({
+    log: ["warn", "error"]
 });
-
-
 
 const addRiddles = async () => {
     try {
         const riddles = [
             {
              "rid": "RID001",
-             "description": "In a narrow passage, where courage resides,\nSuperheroes' images stand with pride.",
+             "description": "आग में तपकर ही सच्चा शूरवीर बनता है, यही दीवार उसकी सच्चाई को मानती है।",
              "riddlecode": "AB",
              "location": "Neki ki diwar"
             },
             {
              "rid": "RID002",
-             "description": "I have two faces. one face doesnot like taller ones and the  other face is hidden from the world . I stay next to noble prize winner",
+             "description": "The hidden gate near the tallest building, where tools come to life.",
              "riddlecode": "AG",
-             "location": " mech block back gate "
+             "location": "Mech block back gate"
             },
             {
              "rid": "RID003",
-             "description": "Calm mind and stable body is what will get you to your next target",
+             "description": "Where precision meets focus and targets align, what place is known for aiming straight and fine?",
              "riddlecode": "AE",
              "location": "Archery"
             },
             {
              "rid": "RID004",
-             "description": "Mere paas aao,  keemti chiz pao,Jyada khwahishe nhi h meri, bs apne keemti ank btao",
+             "description": "Rahu aapki seva mei chahe raat ho ya din, Dikhau aapki keemat, bs daalo apna pin.",
              "riddlecode": "AX",
              "location": "ATM"
             },
             {
              "rid": "RID005",
-             "description": "I am a gateway to financial dreams,my cords and cards ignite digital streams",
-             "riddlecode": "AX",
-             "location": "ATM"
-            },
-            {
-             "rid": "RID006",
-             "description": " A place where talents brightly shine, With seats in rows, so neatly aligned. Performances echo, emotions soar",
+             "description": "I stand tall, a place of sound, Where voices echo all around. Speeches, songs, and plays unfold, Right across where decisions hold. What am I?",
              "riddlecode": "BD",
              "location": "Auditorium"
             },
             {
-             "rid": "RID007",
-             "description": "Mai batati hun roz ka tapmaan,mujhse hota hai do kinaro ka aadan pradan",
-             "riddlecode": "BG",
-             "location": "Bridge"
-            },
-            {
-             "rid": "RID008",
-             "description": "College ki shaan, yha hota h bhot jaam,Jagah h Kamal , lekin Muft nhi saman",
+             "rid": "RID006",
+             "description": "The hot spot, where students flock, a hub of chatter from dusk to dawn. Treats tempt, but wallet beware, because every place has a cost to bear.",
              "riddlecode": "AU",
              "location": "Cafeteria"
             },
             {
-             "rid": "RID009",
-             "description": "I'm the tallest brother in the town. Guess who am I ?",
+             "rid": "RID007",
+             "description": "I'm the tallest brother in the town. Guess who am I?",
              "riddlecode": "AP",
              "location": "CV Raman"
             },
             {
-             "rid": "RID010",
-             "description": "I silently wait, serving one and all,No exams, no grades, but a different test",
+             "rid": "RID008",
+             "description": "Don't let a simple ache stop you in your heels; come here to find all your remedies and heal.",
              "riddlecode": "AN",
              "location": "Dispensary"
             },
             {
-             "rid": "RID011",
-             "description": "I use network to manage the network of data.Find me.",
+             "rid": "RID009",
+             "description": "I use network to manage the network of data. Find me.",
              "riddlecode": "AJ",
-             "location": "IT cell "
+             "location": "IT Cell"
             },
             {
-             "rid": "RID012",
-             "description": "Where creativity thrives, in the open air,This place in your college, do you know where?",
+             "rid": "RID010",
+             "description": "A place of sport and dance and play, Where students gather day by day. A junction named for a famous man, A bustling hub, a vibrant plan. What is it?",
              "riddlecode": "AL",
              "location": "LC"
             },
             {
-             "rid": "RID013",
-             "description": " a place Where knowledge grows and stories unfold.",
+             "rid": "RID011",
+             "description": "Place where stories unfold, yet silence is made of gold. What is it?",
              "riddlecode": "BC",
              "location": "Library"
             },
             {
-             "rid": "RID014",
-             "description": " I'm not a wall, but I stand so grand, With open arms, I welcome the land.  I'm the first to greet.",
+             "rid": "RID012",
+             "description": "A grand entry where journeys start, The first step to knowledge and art.",
              "riddlecode": "BB",
              "location": "Main Gate"
             },
             {
-             "rid": "RID015",
-             "description": " In this block of YMCA , numbers meet strategy and hundreds of aspiring CEOs are born.",
+             "rid": "RID013",
+             "description": "Here, the business ideas flow, Instilling life skills, which helps students grow.",
              "riddlecode": "AR",
-             "location": "Management block "
+             "location": "Management Block"
             },
             {
-             "rid": "RID016",
-             "description": "Amidst the pages where wisdom's found,A sacred place where silence is profound.",
+             "rid": "RID014",
+             "description": "Come here to find comfort for the soul and peace of mind; feel closer to divinity and leave your worries behind.",
              "riddlecode": "AM",
              "location": "Mandir"
             },
             {
-             "rid": "RID017",
-             "description": "Phoolon ki mehfil, chota sa sthal,Dosto ke liye , kuch yaad gar pal",
+             "rid": "RID015",
+             "description": "A place where business minds meet, Ideas are shared while sitting on a bench. The entrance has a soil that remains drenched.",
              "riddlecode": "AY",
-             "location": "MBA park"
+             "location": "MBA Park"
             },
             {
-             "rid": "RID018",
-             "description": "Near the residence where  girls reside, Guess my name, where laughter is amplified.",
-             "riddlecode": "AY",
-             "location": "mba park"
-            },
-            {
-             "rid": "RID019",
-             "description": "I am a fighter built using techniques like welding",
-             "riddlecode": "BH",
-             "location": "Mech Next Soldier Statue"
-            },
-            {
-             "rid": "RID020",
-             "description": "I have keys but no locks,I'm filled with tools and blocks.What am I?",
+             "rid": "RID016",
+             "description": "The heart of metals, where ideas take shape.",
              "riddlecode": "AI",
-             "location": "Mechanical workshop "
+             "location": "Mechanical Workshop"
             },
             {
-             "rid": "RID021",
-             "description": "A place with tagline \"Happy Food Happy People\"",
+             "rid": "RID017",
+             "description": "A place with the tagline 'Happy Food Happy People.'",
              "riddlecode": "AO",
              "location": "Mother Dairy"
             },
             {
-             "rid": "RID022",
-             "description": " A place where uniforms stand tall, Leaders emerge, ready to heed the call",
+             "rid": "RID018",
+             "description": "Seek where the young in uniform stand, To serve their nation, with discipline at hand.",
              "riddlecode": "BE",
              "location": "NCC Office"
             },
             {
-             "rid": "RID023",
-             "description": "In vibrant colors, they bloom with grace,On which place do you see the flowers' embrace?",
+             "rid": "RID019",
+             "description": "Where colors bloom and green leaves play, A garden where nature finds its way. What is it?",
              "riddlecode": "AV",
              "location": "Nursery"
             },
             {
-             "rid": "RID024",
-             "description": "Hai mitti jaha har pal pal,Khade hote hai ghode jahan thak kar chal kar,Baarish mai ban jata hai dal-dal",
+             "rid": "RID020",
+             "description": "Beyond the arch where students roam, A secure spot where wheels find home.",
              "riddlecode": "BF",
              "location": "Parking"
             },
             {
-             "rid": "RID025",
-             "description": "I don't have a heart, still I can express other's feelings with you. I don't have legs still I can bring gifts and messages for you. Who am I?",
+             "rid": "RID021",
+             "description": "Na keh sako agar koi baat, to likh ke bta dena, likhi hui baat yaha se bhijwa dena.",
              "riddlecode": "AF",
-             "location": "Post office"
+             "location": "Post Office"
             },
             {
-             "rid": "RID026",
-             "description": "Yaha hum ek aisi chiz bnate hai jisse dekhke har insaan yahi kehta hai ki papa ek baar dila do bss, swaad aa jayege!",
+             "rid": "RID022",
+             "description": "Made like a gun, riding me is fun. Lohe ki gaadi, shero ki sawaari.",
              "riddlecode": "AT",
              "location": "Royal Enfield"
             },
             {
-             "rid": "RID027",
-             "description": "Padhna hai toh aana padhega, aake sab kuch dikhana pdega ,agar galat hue documents toh bahar tumko jaana padhega.",
+             "rid": "RID023",
+             "description": "With tensed heads, in queue you stand, aiming to secure your seat on the spot.",
              "riddlecode": "AD",
              "location": "Shakuntalam"
             },
             {
-             "rid": "RID028",
-             "description": "If u are creative, u adore colors, come here, & experience the vibe",
+             "rid": "RID024",
+             "description": "The place where creativity rules the day with paints and papers.",
              "riddlecode": "AS",
              "location": "Srijan Headquarters"
             },
             {
-             "rid": "RID029",
-             "description": "an illustrator's dome",
-             "riddlecode": "AS",
-             "location": "srijan headquarters "
-            },
-            {
-             "rid": "RID030",
-             "description": "With strings and keys, in a snug small place,Guess this spot where voices find their space.",
+             "rid": "RID025",
+             "description": "Jaha se aaye madhur aawaz, Jaha se nikle sureele raag, Jaha hote hai Sangeet aur saaz, Btao kaha chupa hai agla raaz.",
              "riddlecode": "AZ",
              "location": "Tarannum Quarters"
             },
             {
-             "rid": "RID031",
-             "description": "Where futures take flight, job dreams take their chance,in this office of prospects, careers advance.",
+             "rid": "RID026",
+             "description": "I am the office where career advance, future soars, seeking to place all those who deserve. I stand tall near to where wealth reserves.",
              "riddlecode": "AK",
              "location": "TPO"
             },
             {
-             "rid": "RID032",
-             "description": " I'm a garden but I'm not, because I'm not as that you thought, and situated behind the big big building blocks.",
+             "rid": "RID027",
+             "description": "In bottles I grow, with time. I stand upright, I don’t spread wide. Do you know where I hide?",
              "riddlecode": "AQ",
-             "location": "Vertical garden"
+             "location": "Vertical Garden"
             },
             {
-             "rid": "RID033",
-             "description": "badi ball hu mai par sab se halki hu, jaha maro vha chali jati hu ,par agar gir gyi to kisiko har dilati hu",
+             "rid": "RID028",
+             "description": "I’m split by a net, with players in rows, where teamwork decides how the match goes.",
              "riddlecode": "AH",
              "location": "Volleyball Ground"
             },
             {
-             "rid": "RID034",
-             "description": " a place with two poles and two teams each passing me to one another",
-             "riddlecode": "AH",
-             "location": "volleyball ground "
-            },
-            {
-             "rid": "RID035",
-             "description": "A sustainable way where nature's gift well retained,Guess this method, where water's wisdom is ingrained.",
+             "rid": "RID029",
+             "description": "I am a tank built under the ground, Where the rain from above can be found.",
              "riddlecode": "AW",
              "location": "Water Harvesting"
             },
             {
-             "rid": "RID036",
-             "description": "Yeh hai ek sthal,Jaha hai Mahilaon ki har samasya ka hal",
+             "rid": "RID030",
+             "description": "Where whispered secrets and stories of women are kept in quote embrace. What is this place?",
              "riddlecode": "AC",
-             "location": "Women cell"
+             "location": "Women Cell"
             },
             {
-             "rid": "RID037",
-             "description": "In this space where women's voices resound, Empowerment and safety, here they are found.",
-             "riddlecode": "AC",
-             "location": "women cell"
-            },
-            {
-             "rid": "RID038",
-             "description": "I can show you where things are but I’m not a tour guide,I have a scale but I don’t weigh things. I can show you what’s in north, south, west and east but I’m not a compass ",
+             "rid": "RID031",
+             "description": "दिशाओं का ज्ञानी, हर कोने का साथी, बताता सही राह, जब हो कहीं उलझन भरी।",
              "riddlecode": "SG",
-             "location": "YMCA ka map"
-            }
-           ];
+             "location": "YMCA ka Map"
+            },
+            {
+                "rid": "RID032",
+                "description": "I stand where the university's borders mark an end,opening the way to where the cars reside.",
+                "riddlecode": "SB",
+                "location": "2nd front gate"
+            },
+            {
+                "rid": "RID033",
+                "description": "I stand proud with a silent roar, king of beast but made of stone, who am I ?",
+                "riddlecode": "LL",
+                "location": "Lion statue in front of E Dept"
+            },
+            {
+                "rid": "RID034",
+                "description": " no swifts only drifts, Ra ta ta?",
+                "riddlecode": "OU",
+                "location": "Mechnext supra garage"
+            },
+            {
+                "rid": "RID035",
+                "description": " I stand upright, watching them chase for scores with all their might.",
+                "riddlecode": "FK",
+                "location": "Football post"
+            },
+            {
+                "rid": "RID036",
+                "description": " I am a room where silence stays, With watchful eyes that never stray, I stand guard both night and day, Can you guess, who am I, keeping threats at bay?",
+                "riddlecode": "KF",
+                "location": "GUARD room"
+            },
+            {
+                "rid": "RID037",
+                "description": " A place to sit and eat or snack, But first, these steps you must track!",
+                "riddlecode": "PO",
+                "location": "YMCA mess stairs"
+            },
+            
+            {
+                "rid": "RID038",
+                "description": " Guarding the haven of knowledge and rest, through me, professors find their nest. What am I?",
+                "riddlecode": "QW",
+                "location": "Staff quarter Main gate"
+            },
+            {
+                "rid": "RID039",
+                "description": " Bats and balls, nets and more, I keep them safe behind my door. What am I?",
+                "riddlecode": "IO",
+                "location": "Sports room"
+            },
+            {
+                "rid": "RID040",
+                "description": " Where students build futures day by day. What place helps craft and create, A vocational path to shape their fate?",
+                "riddlecode": "PU",
+                "location": "Bvoc building"
+            },
+
+
+            
+        ];
 
         // Insert all riddles if they don't exist yet
         await prisma.riddle.createMany({
@@ -254,5 +268,4 @@ const addRiddles = async () => {
 
 addRiddles();
 
-
-module.exports= prisma;
+module.exports = prisma;

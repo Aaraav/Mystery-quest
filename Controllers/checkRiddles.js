@@ -80,7 +80,7 @@ const checkAnswer = async (req, res) => {
                 data: { attempts: progress.attempts + 1 }
             });
 
-            if (progress.attempts + 1 >= 4) {
+            if (progress.attempts >= 6) {
                 return res.status(400).json({ message: "Incorrect answer. You have used all your attempts for this riddle." });
             }
 
